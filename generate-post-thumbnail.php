@@ -10,6 +10,7 @@ class GeneratePostThumbnail
 {
     function GeneratePostThumbnail() // initialization
     {
+        load_plugin_textdomain('generate-post-thumbnail', false, '/generate-post-thumbnail/localization');
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('wp_ajax_generate_post_thumbnail', array($this, 'ajax_process_post'));
     }
@@ -33,21 +34,21 @@ class GeneratePostThumbnail
 
     function admin_interface() // admin page
     {
-        $success_message = __("Thumbnails generation process is finished. Processed posts/pages: %d");
+        $success_message = __('Thumbnails generation process is finished. Processed posts: %d', 'generate-post-thumbnail');
 ?>
 <div class="wrap">
   <div class="icon32" id="icon-tools"><br/></div>
-  <h2><?php echo __('Thumbnails Generation'); ?></h2>
+  <h2><?php _e('Thumbnails Generation'); ?></h2>
   <div class="metabox-holder">
        <?php
        if (!current_theme_supports('post-thumbnails')) { // theme should support post-thumbnails
        ?>
-           <div class="error"><p><strong>Plugin warning:</strong> Your current theme does not support thumbnails. You need to adjust your theme in order to use this plugin. Please read plugin page for more information. Settings will appear on this page once you enable thumbnails in your theme.</p></div>
+           <div class="error"><p><strong><?php _e('Plugin warning', 'generate-post-thumbnail');?>:</strong> <?php _e('Your current theme does not support thumbnails. You need to adjust your theme in order to use this plugin. Please read plugin page for more information. Settings will appear on this page once you enable thumbnails in your theme.', 'generate-post-thumbnail');?></p></div>
            <?php
        }
        else {
            global $wpdb;
-           $posts = $wpdb->get_results("select ID from $wpdb->posts where post_type = 'post' or post_type = 'page'");
+           $posts = $wpdb->get_results("select ID from $wpdb->posts where post_type = 'post'");
            $posts_count = count($posts);
            if ($posts_count) {
                foreach ($posts as $post) {
@@ -65,7 +66,7 @@ class GeneratePostThumbnail
                $overwrite = (isset($_POST['overwrite'])) ? true: false;
                if ($posts_ids) {
                    foreach ($posts_ids as $post_id) {
-                       $this->process_images($post_id, $overwrite);
+                       $this->process_images($post_id, $overwrite, $_POST['imagenumber']);
                    }
                }
                $message = sprintf($success_message, count($posts));
@@ -76,32 +77,32 @@ class GeneratePostThumbnail
       <input type="hidden" name="generate-thumbnails-submit" value="1" />
       <?php wp_nonce_field('generate-thumbnails') ?>
       <div class="postbox">
-        <h3><?php echo __('Thumbnails generation settings');?></h3>
+        <h3><?php _e('Thumbnails generation settings', 'generate-post-thumbnail');?></h3>
         <table class="form-table">
           <tr valign="top">
-            <th scope="row">Overwrite existing thumbnails:</th>
+            <th scope="row"><?php _e('Overwrite existing thumbnails', 'generate-post-thumbnail'); ?>:</th>
             <td>
             <input type="checkbox" name="overwrite" id="overwrite" value="1" <?php if (false) { echo 'checked="checked"'; } ?>/>
-            <label for="rewrite"><?php echo __('Check this if you want existing post thumbnails to be completely overwritten by this plugin.'); ?></label><br />
+           <label for="rewrite"><?php _e('Check this if you want existing post-thumbnails to be overwritten with generated thumbnails.', 'generate-post-thumbnail'); ?></label><br />
             </td>
           </tr>
           <tr valign="top">
-            <th scope="row">Image number in the post:</th>
+            <th scope="row"><?php _e('Image number in the post', 'generate-post-thumbnail');?>:</th>
             <td>
-              <input type="text" name="generate_number" id="generate_number" value="1" <?php if (false) { echo 'checked="checked"'; } ?> size="2"/>
-              <label for="generate_number"><?php echo __('Sequence number of the image in the post to be stored as a post thumbnail. Ex. 1 for the first post image, 2 for the second, etc.'); ?></label><br />
+              <input type="text" name="imagenumber" id="imagenumber" value="1" <?php if (false) { echo 'checked="checked"'; } ?> size="2"/>
+              <label for="imagenumber"><?php _e('Sequence number of the image in the post to be stored as a post thumbnail. Ex. 1 for the first post image, 2 for the second, etc. If there is no image at the given number, existing thumbnail will be removed.', 'generate-post-thumbnail'); ?></label><br />
             </td>
           </tr>
         </table>
       </div>
-      <input id="generate-thumbnail-button" name="Submit" value="<?php echo __('Generate thumbnails'); ?>" type="submit" class="button"/>
-      <noscript><p>Javascript is disabled, you will be redirected. Please do not close your page untill process is finished.</p></noscript>
+      <input id="generate-thumbnail-button" name="Submit" value="<?php _e('Generate thumbnails', 'generate-post-thumbnail'); ?>" type="submit" class="button"/>
+      <noscript><p><?php _e('Javascript is disabled, you will be redirected. Please do not close your page untill process is finished.', 'generate-post-thumbnail');?></p></noscript>
       <script type="text/javascript">
         jQuery(document).ready(function($) {
             $("#generate_thumbs_form").submit(function(event){
                 event.preventDefault();
                 $("#generate-thumbnail-button").attr('disabled', true);
-                $("#message").html("Please wait untill process is finished. This process may take up to several minutes, depending on the number of posts and server capacity.");
+                $("#message").html("<?php _e('Please wait untill process is finished. This process may take up to several minutes, depending on the number of posts and server capacity.', 'generate-post-thumbnail');?>");
                 $("#message").show();
                 $("#gt_progressbar").progressbar({ value: 0 });
                 $("#gt_progressbar_percent").html("0%");
@@ -110,14 +111,14 @@ class GeneratePostThumbnail
                 var gt_posts = [<?php echo implode(", ", $posts_ids); ?>];
                 var gt_total = gt_posts.length;
                 var gt_overwrite = $('#overwrite').is(':checked') ? 1 : 0;
+                var gt_imagenumber = $('#imagenumber').val();
 
                 function GenerateThumbnails(post_id) {
-                    $.post(ajaxurl, {action: "generate_post_thumbnail", post_id: post_id, overwrite: gt_overwrite}, function(response){
+                    $.post(ajaxurl, {action: "generate_post_thumbnail", post_id: post_id, overwrite: gt_overwrite, imagenumber: gt_imagenumber}, function(response){
                         gt_percent = (gt_count / gt_total) * 100;
                         $("#gt_progressbar").progressbar("value", gt_percent);
                         $("#gt_progressbar_percent").html(Math.round(gt_percent) + "%");
                         gt_count++;
-
                         if (gt_posts.length) {
                             GenerateThumbnails(gt_posts.shift());
                         } else {
@@ -142,7 +143,7 @@ class GeneratePostThumbnail
         <?php
     } // endfunction admin_interface
 
-    function process_images($post_id, $overwrite = false) // generating thumbnail for single post
+    function process_images($post_id, $overwrite = false, $imagenumber = 1) // generating thumbnail for a single post
     {
         $post = get_post($post_id);
         if (!$post) {
@@ -154,19 +155,22 @@ class GeneratePostThumbnail
         set_time_limit(60);
         $wud = wp_upload_dir();
         $image = '';
-
-        preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', $post->post_content, $matches);
-        if (isset($matches)) { $image = $matches[1][0]; }
+        $imagenumber = preg_replace('/[^\d]/', '', $imagenumber);
+        preg_match_all('|<img.*?src=[\'"](' . $wud['baseurl'] . '.*?)[\'"].*?>|i', $post->post_content, $matches); // search for uploaded images in the post
+        if (empty($imagenumber) || $imagenumber == 0) {
+            return false;
+        }
+        if (isset($matches) and isset($matches[1][$imagenumber-1])) {
+            $image = $matches[1][$imagenumber-1];
+        }
+        else  {
+            // no image for thumbnail
+            delete_post_meta($post->ID, '_thumbnail_id');
+        }
 
         if (strlen(trim($image)) > 0) { // if image was found
             $parts = pathinfo($image);
-            $args = array(
-                          'post_type' => 'attachment',
-                          'numberposts' => -1,
-                          'post_status' => null,
-                          'post_parent' => $post->ID
-                          );
-            $attachments = get_posts($args);
+            $attachments = get_posts('post_type=attachment&numberposts=-1&post_mime_type=image&post_status=null&post_parent=' . $post->ID);
             $found_attachment = null;
             if ($attachments) {
                 foreach ($attachments as $attachment) {
@@ -174,13 +178,19 @@ class GeneratePostThumbnail
                     if ($metadata) {
                         foreach ($metadata as $metaitem) {
                             $original_image = $wud['baseurl'] . '/' . $metaitem['file'];
-                            if ($original_image == $image || //check if original image was used in post
-                                $metaitem['sizes']['thumbnail']['file'] == $parts['basename'] ||
-                                $metaitem['sizes']['medium']['file'] == $parts['basename'] ||
-                                $metaitem['sizes']['large']['file'] == $parts['basename'] ) //search for used thumbnail size
-                            {
+                            if ($original_image == $image ) { //check if original image was used in post
                                 $found_attachment = $attachment->ID;
                                 break 2;
+                            }
+                            else { //search for used thumbnail size
+                                if (count($metaitem['sizes'])) {
+                                    foreach($metaitem['sizes'] as $image_size) {
+                                        if ($image_size['file'] == $parts['basename']) {
+                                            $found_attachment = $attachment->ID;
+                                            break 3;                                        
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -201,7 +211,7 @@ class GeneratePostThumbnail
     {
         if (!current_user_can('manage_options'))
             die('-1');
-        if ($this->process_images($_POST['post_id'], $_POST['overwrite'])) {
+        if ($this->process_images($_POST['post_id'], $_POST['overwrite'], $_POST['imagenumber'])) {
             die('1');
         } else {
             die('-1');
