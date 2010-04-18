@@ -1,21 +1,21 @@
 <?php /*
-  Plugin Name:  Generate Post Thumbnail
-  Plugin URI:   http://wordpress.shaldybina.com/plugins/generate-post-thumbnail/
-  Description:  Tool for mass generating wordpress posts thumbnails from the post image.
+  Plugin Name:  Generate Post Thumbnails
+  Plugin URI:   http://wordpress.shaldybina.com/plugins/generate-post-thumbnails/
+  Description:  Tool for mass generation of Wordpress posts thumbnails using the post images.
   Version:      1.0
   Author:       M.Shaldybina
   Author URI:   http://shaldybina.com/
 */
-class GeneratePostThumbnail {
+class GeneratePostThumbnails {
 
-	function GeneratePostThumbnail() { // initialization
-		load_plugin_textdomain( 'generate-post-thumbnail', false, basename( dirname( __FILE__ ) ) . '/locale' );
+	function GeneratePostThumbnails() { // initialization
+		load_plugin_textdomain( 'generate-post-thumbnails', false, basename( dirname( __FILE__ ) ) . '/locale' );
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-		add_action( 'wp_ajax_generate_post_thumbnail', array( $this, 'ajax_process_post' ) );
+		add_action( 'wp_ajax_generate_post_thumbnails', array( $this, 'ajax_process_post' ) );
 	}
 
 	function add_admin_menu() { // admin menu item
-		$page = add_management_page( __( 'Generate Thumbnails' ), __( 'Generate Thumbnails' ), 'administrator', 'generate-post-thumbnail', array( $this, 'admin_interface' ) );
+		$page = add_management_page( __( 'Generate Thumbnails', 'generate-post-thumbnails' ), __( 'Generate Thumbnails', 'generate-post-thumbnails' ), 'administrator', 'generate-post-thumbnails', array( $this, 'admin_interface' ) );
 		add_action( 'admin_print_scripts-' . $page, array( $this, 'admin_scripts' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'admin_styles' ) );
 	}
@@ -29,14 +29,14 @@ class GeneratePostThumbnail {
 	}
 
 	function admin_interface() { // admin page
-		$success_message = __( 'Thumbnails generation process is finished. Processed posts: %d', 'generate-post-thumbnail' );
+		$success_message = __( 'Thumbnails generation process is finished. Processed posts: %d', 'generate-post-thumbnails' );
 ?>
 <div class="wrap">
 <div class="icon32" id="icon-tools"><br/></div>
-	<h2><?php _e( 'Thumbnails Generation' ); ?></h2>
+	<h2><?php _e( 'Thumbnails Generation', 'generate-post-thumbnails' ); ?></h2>
 	<div class="metabox-holder">
 	<?php if ( !current_theme_supports( 'post-thumbnails' ) ) { /* theme should support post-thumbnails*/ ?>
-	<div class="error"><p><strong><?php _e( 'Plugin warning', 'generate-post-thumbnail' ); ?>:</strong> <?php _e( 'Your current theme does not support thumbnails. You need to adjust your theme in order to use this plugin. Please read plugin page for more information. Settings will appear on this page once you enable thumbnails in your theme.', 'generate-post-thumbnail' ); ?></p></div>
+	<div class="error"><p><strong><?php _e( 'Plugin warning', 'generate-post-thumbnails' ); ?>:</strong> <?php _e( 'Your current theme does not support thumbnails. You need to adjust your theme in order to use this plugin. Please read plugin page for more information. Settings will appear on this page once you enable thumbnails in your theme.', 'generate-post-thumbnails' ); ?></p></div>
 	<?php
 	} // endif theme supports thumbnails
 	else {
@@ -63,36 +63,36 @@ class GeneratePostThumbnail {
 		}
 		?>
 		<div id="message" class="updated" <?php if ( empty($message) ) : ?>style="display: none;"<?php endif; ?>><?php echo $message; ?></div>
-		<form id="generate_thumbs_form" action="?page=generate-post-thumbnail" method="POST">
+		<form id="generate_thumbs_form" action="?page=generate-post-thumbnails" method="POST">
 			<input type="hidden" name="generate-thumbnails-submit" value="1" />
 			<?php wp_nonce_field( 'generate-thumbnails' ); ?>
 			<div class="postbox">
-				<h3><?php _e( 'Thumbnails generation settings', 'generate-post-thumbnail' ); ?></h3>
+				<h3><?php _e( 'Thumbnails generation settings', 'generate-post-thumbnails' ); ?></h3>
 				<table class="form-table">
 					<tr valign="top">
-						<th scope="row"><?php _e( 'Overwrite existing thumbnails', 'generate-post-thumbnail' ); ?>:</th>
+						<th scope="row"><?php _e( 'Overwrite existing thumbnails', 'generate-post-thumbnails' ); ?>:</th>
 						<td>
 							<input type="checkbox" name="overwrite" id="overwrite" value="1" />
-							<label for="rewrite"><?php _e( 'Check this if you want existing post-thumbnails to be overwritten with generated thumbnails.', 'generate-post-thumbnail' ); ?></label><br />
+							<label for="rewrite"><?php _e( 'Check this if you want existing post thumbnails to be overwritten with generated thumbnails.', 'generate-post-thumbnails' ); ?></label><br />
 						</td>
 					</tr>
 					<tr valign="top">
-						<th scope="row"><?php _e( 'Image number in the post', 'generate-post-thumbnail' ); ?>:</th>
+						<th scope="row"><?php _e( 'Image number in the post', 'generate-post-thumbnails' ); ?>:</th>
 						<td>
 							<input type="text" name="imagenumber" id="imagenumber" value="1" size="2"/>
-							<label for="imagenumber"><?php _e( 'Sequence number of the image in the post to be stored as a post thumbnail. Ex. 1 for the first post image, 2 for the second, etc. If there is no image at the given number, existing thumbnail will be removed.', 'generate-post-thumbnail' ); ?></label><br />
+							<label for="imagenumber"><?php _e( 'Sequence number of the image in the post to be stored as a post thumbnail. Ex. 1 for the first post image, 2 for the second, etc. If there is no image at the given number, existing thumbnail will be removed.', 'generate-post-thumbnails' ); ?></label><br />
 						</td>
 					</tr>
 				</table>
 			</div>
 			<input id="generate-thumbnail-button" name="Submit" value="<?php _e( 'Generate thumbnails', 'generate-post-thumbnail' ); ?>" type="submit" class="button"/>
-			<noscript><p><?php _e( 'Javascript is disabled, you will be redirected. Please do not close your page untill process is finished.', 'generate-post-thumbnail' ); ?></p></noscript>
+			<noscript><p><?php _e( 'Javascript is disabled, you will be redirected. Please do not close your page until the process is finished.', 'generate-post-thumbnails' ); ?></p></noscript>
 			<script type="text/javascript">
 				jQuery(document).ready(function($) {
 						$("#generate_thumbs_form1").submit(function(event) {
 							event.preventDefault();
 							$("#generate-thumbnail-button").attr('disabled', true);
-							$("#message").html("<?php _e('Please wait untill process is finished. This process may take up to several minutes, depending on the number of posts and server capacity.', 'generate-post-thumbnail');?>");
+							$("#message").html("<?php _e( 'Please wait until the process is finished. This process may take up to several minutes, depending on the number of posts and server capacity.', 'generate-post-thumbnails' ); ?>");
 							$("#message").show();
 							$("#gt_progressbar").progressbar({ value: 0 });
 							$("#gt_progressbar_percent").html("0%");
@@ -195,10 +195,10 @@ class GeneratePostThumbnail {
 	}
 } // endclass
 
-add_action('init', 'GeneratePostThumbnail');
+add_action( 'init', 'GeneratePostThumbnails' );
 
-function GeneratePostThumbnail() {
-	global $GenearetPostThumbnail;
-	$GeneratePostThumbnail = new GeneratePostThumbnail();
+function GeneratePostThumbnails() {
+	global $GenearetPostThumbnails;
+	$GeneratePostThumbnails = new GeneratePostThumbnails();
 }
 ?>
