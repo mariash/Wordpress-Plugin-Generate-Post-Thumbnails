@@ -1,0 +1,90 @@
+# Russian translation of Generate-Post-Thumbnails plugin
+# Copyright (C) 2010 M.I.Shaldybina
+# This file is distributed under the same license as the Generate-Post-Thumbnails package.
+# Maria Shaldybina <mary@shaldybina.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Generate Post Thumbnail 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-18 16:02-0700\n"
+"PO-Revision-Date: 2010-04-18 16:58-0700\n"
+"Last-Translator: M.Shaldybina <mary@shaldybina.com>\n"
+"Language-Team: ru_RU <mary@shaldybina.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: generate-post-thumbnails.php:30
+msgid "Generate Thumbnails"
+msgstr "Генерация миниатюр"
+
+#: generate-post-thumbnails.php:44
+#, php-format
+msgid "Thumbnails generation process is finished. Processed posts: %d"
+msgstr "Процесс генерации миниатюр завершен. Обработано записей: "
+
+#: generate-post-thumbnails.php:48
+msgid "Thumbnails Generation"
+msgstr "Генерация миниатюр"
+
+#: generate-post-thumbnails.php:51
+msgid "Plugin warning"
+msgstr "Внимание"
+
+#: generate-post-thumbnails.php:51
+msgid ""
+"Your current theme does not support thumbnails. You need to adjust your "
+"theme in order to use this plugin. Please read plugin page for more "
+"information. Settings will appear on this page once you enable thumbnails in "
+"your theme."
+msgstr "Ваша текущая тема не поддерживает миниатюры. Чтобы использовать этот плагин необходимо включить поддержку миниатюр в теме. Пожалуйста прочитайте информацию на странице плагина. Настройки появятся сразу как миниатюры будут включены в теме."
+
+#: generate-post-thumbnails.php:67
+msgid "No access"
+msgstr "Нет доступа"
+
+#: generate-post-thumbnails.php:82
+msgid "Thumbnails generation settings"
+msgstr "Настройки генерации миниатюр"
+
+#: generate-post-thumbnails.php:85
+msgid "Overwrite existing thumbnails"
+msgstr "Перезаписать текущие миниатюры"
+
+#: generate-post-thumbnails.php:88
+msgid ""
+"Check this if you want existing post thumbnails to be overwritten with "
+"generated thumbnails."
+msgstr "Отметьте данный параметр, чтобы перезаписать уже существующие миниатюры."
+
+#: generate-post-thumbnails.php:92
+msgid "Image number in the post"
+msgstr "Номер изображения в записи"
+
+#: generate-post-thumbnails.php:95
+msgid ""
+"Sequence number of the image in the post to be stored as a post thumbnail. "
+"Ex. 1 for the first post image, 2 for the second, etc. If there is no image "
+"at the given number, existing thumbnail will be removed."
+msgstr "Порядковый номер изоображения в записи, которое будет сохранено как миниатюра записи. Если по данному номеру нет изображения, то существующая миниатюра будет удалена."
+
+#: generate-post-thumbnails.php:100
+msgid "Generate thumbnails"
+msgstr "Сгенерировать миниатюры"
+
+#: generate-post-thumbnails.php:101
+msgid ""
+"Javascript is disabled, you will be redirected. Please do not close your "
+"page until the process is finished."
+msgstr "Яваскрипт отключен, страница будет перенаправлена. Пожалуйста, дождитесь перезагрузки страницы для завершения обработки."
+
+#: generate-post-thumbnails.php:107
+msgid ""
+"Please wait until the process is finished. This process may take up to "
+"several minutes, depending on the number of posts and server capacity."
+msgstr "Пожалуйста, дождитесь завершение процесса обработки. Данный процесс может занять до нескольки минут в зависимости от количества записей и возможностей сервера."
