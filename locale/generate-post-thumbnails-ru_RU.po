@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Generate Post Thumbnail 1.0\n"
+"Project-Id-Version: Generate Post Thumbnail 0.4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-18 16:02-0700\n"
-"PO-Revision-Date: 2010-04-18 16:58-0700\n"
+"PO-Revision-Date: 2010-04-19 21:09-0700\n"
 "Last-Translator: M.Shaldybina <mary@shaldybina.com>\n"
 "Language-Team: ru_RU <mary@shaldybina.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Генерация миниатюр"
 #: generate-post-thumbnails.php:44
 #, php-format
 msgid "Thumbnails generation process is finished. Processed posts: %d"
-msgstr "Процесс генерации миниатюр завершен. Обработано записей: "
+msgstr "Процесс генерации миниатюр завершен. Обработано записей: %d"
 
 #: generate-post-thumbnails.php:48
 msgid "Thumbnails Generation"

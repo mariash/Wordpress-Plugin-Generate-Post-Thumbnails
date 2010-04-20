@@ -2,21 +2,21 @@
   Plugin Name:  Generate Post Thumbnails
   Plugin URI:   http://wordpress.shaldybina.com/plugins/generate-post-thumbnails/
   Description:  Tool for mass generation of Wordpress posts thumbnails using the post images.
-  Version:      1.0
-  Author:       M.Shaldybina
+  Version:      0.4.1
+  Author:       Maria Shaldybina
   Author URI:   http://shaldybina.com/
 */
 /*  Copyright 2010  Maria I Shaldybina
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 */
 class GeneratePostThumbnails {
 
@@ -54,7 +54,7 @@ class GeneratePostThumbnails {
 	else {
 		global $wpdb;
 		$posts = array();
-		$posts = $wpdb->get_results( "select ID from $wpdb->posts where post_type = 'post1'" );
+		$posts = $wpdb->get_results( "select ID from $wpdb->posts where post_type = 'post'" );
 		$posts_count = count( $posts );
 		$posts_ids = array();
 		foreach ( $posts as $post ) {
@@ -67,6 +67,7 @@ class GeneratePostThumbnails {
 				wp_die( __( 'No access' ) );
 			}
 			check_admin_referer( 'generate-thumbnails' );
+			set_time_limit( 60 );
 			$overwrite = ( isset( $_POST['overwrite'] ) ) ? 'overwrite' : 'skip'; // overwrite or skip current images
 			foreach ( $posts_ids as $post_id ) {
 				$this->process_images( $post_id, $overwrite, $_POST['imagenumber'] );
@@ -97,11 +98,11 @@ class GeneratePostThumbnails {
 					</tr>
 				</table>
 			</div>
-			<input id="generate-thumbnail-button" name="Submit" value="<?php _e( 'Generate thumbnails', 'generate-post-thumbnail' ); ?>" type="submit" class="button"/>
+			<input id="generate-thumbnail-button" name="Submit" value="<?php _e( 'Generate thumbnails', 'generate-post-thumbnails' ); ?>" type="submit" class="button"/>
 			<noscript><p><?php _e( 'Javascript is disabled, you will be redirected. Please do not close your page until the process is finished.', 'generate-post-thumbnails' ); ?></p></noscript>
 			<script type="text/javascript">
 				jQuery(document).ready(function($) {
-						$("#generate_thumbs_form1").submit(function(event) {
+						$("#generate_thumbs_form").submit(function(event) {
 							event.preventDefault();
 							$("#generate-thumbnail-button").attr('disabled', true);
 							$("#message").html("<?php _e( 'Please wait until the process is finished. This process may take up to several minutes, depending on the number of posts and server capacity.', 'generate-post-thumbnails' ); ?>");
@@ -116,8 +117,8 @@ class GeneratePostThumbnails {
 							var gt_imagenumber = $("#imagenumber").val();
 
 							function GenerateThumbnails(post_id) {
-								$.post(ajaxurl, {action: "generate_post_thumbnail", post_id: post_id, overwrite: gt_overwrite, imagenumber: gt_imagenumber}, function(response){
-										gt_percent = (gt_count / gt_total) * 100;
+								$.post(ajaxurl, {action: "generate_post_thumbnails", post_id: post_id, overwrite: gt_overwrite, imagenumber: gt_imagenumber}, function(response){
+										gt_percent = (gt_total > 0) ? (gt_count / gt_total) * 100 : 0;
 										$("#gt_progressbar").progressbar("value", gt_percent);
 										$("#gt_progressbar_percent").html(Math.round(gt_percent) + "%");
 										gt_count++;
@@ -151,19 +152,18 @@ class GeneratePostThumbnails {
 			return false;
 		if ( $overwrite == 'skip' && has_post_thumbnail( $post_id ) ) // check if skip existing thumbnail
 			return false;
-		set_time_limit( 60 );
 		$wud			= wp_upload_dir();
 		$image			= '';
 		$imagenumber	= preg_replace( '/[^\d]/', '', $imagenumber );
 		preg_match_all( '|<img.*?src=[\'"](' . $wud['baseurl'] . '.*?)[\'"].*?>|i', $post->post_content, $matches ); // search for uploaded images in the post
 		if ( empty( $imagenumber ) || $imagenumber == 0 )
 			return false;
-		if ( isset( $matches ) and isset( $matches[1][$imagenumber-1] ) )
+		if ( isset( $matches ) && isset( $matches[1][$imagenumber-1] ) && strlen( trim( $matches[1][$imagenumber-1] ) ) > 0 )
 			$image = $matches[1][$imagenumber-1];
-		else // no image for thumbnail
+		else { // if image was not found in post
 			delete_post_meta( $post->ID, '_thumbnail_id' );
-		if ( strlen( trim( $image ) ) > 0 ) // if image was not found
 			return false;
+		}
 		$parts = pathinfo( $image );
 		$attachments = array();
 		$attachments = get_posts( 'post_type=attachment&numberposts=-1&post_mime_type=image&post_status=null&post_parent=' . $post->ID );
@@ -199,7 +199,7 @@ class GeneratePostThumbnails {
 
 	function ajax_process_post() { // dealing with ajax requests
 		if ( !current_user_can( 'manage_options' ) )
-			die('-1');
+			die('0');
 		if ( $this->process_images( $_POST['post_id'], $_POST['overwrite'], $_POST['imagenumber'] ) )
 			die('1');
 		else
