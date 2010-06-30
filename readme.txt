@@ -4,7 +4,7 @@ Donate link: http://wordpress.shaldybina.com/donate
 Tags: thumbnails, thumbnail
 Requires at least: 2.9
 Tested up to: 2.9.2
-Stable tag: trunk
+Stable tag: 0.6
 
 Tool for mass generation of Wordpress posts thumbnails using the post images.
 
@@ -12,16 +12,13 @@ Tool for mass generation of Wordpress posts thumbnails using the post images.
 
 This plugin will generate post thumbnails using the post images.
 
-Wordpress 2.9 introduced new feature Post Thumbnails, that allows to specify post thumbnails sizes in theme, assign thumbnails for each post and easily display post thumbnail of required size in theme. 
+Wordpress 2.9 introduced new feature Post Thumbnails, that allows to specify post thumbnails sizes in themes, assign thumbnails for each post and easily display post thumbnail of required size in theme. 
 
-This plugin will be useful if you need automatically assign thumbnails for already existing blog posts using post images, that were uploaded at your Wordpress blog. This situation may occur if you decided to use this Wordpress feature in your theme either by upgrading your Wordpress to 2.9 or by upgrading your blog theme.
+This plugin will be useful if you need to assign post thumbnails for already existing blog posts using post images.By default it takes the first post image uploaded on server or externally hosted and assigns it as post thumbnail. Interface is based on Ajax to prevent timeout issues.
 
 Related Links:
 
 * <a href="http://wordpress.shaldybina.com/plugins/generate-post-thumbnails/" title="Generate Post Thumbnails Plugin for WordPress">Plugin Homepage</a>
-* <a href="http://codex.wordpress.org/Post_Thumbnails" title="Wordpress page about Post Thumbnails feature">Wordpress Post Thumbnails feature page</a>
-* <a href="http://markjaquith.wordpress.com/2009/12/23/new-in-wordpress-2-9-post-thumbnail-images/" title="New in WordPress 2.9: Post Thumbnail Images - Mark on WordPress">New in WordPress 2.9: Post Thumbnail Images &laquo;  Mark on WordPress</a>
-* <a href="http://wordpress.org/extend/plugins/regenerate-thumbnails/" title="Regenerate Thumbnails plugin">Regenerate Thumbnails</a> - very useful plugin for changed size options of Wordpress attachments as well as already assigned thumbnails.
 
 == Installation ==
 
@@ -34,15 +31,11 @@ Related Links:
 
 == Frequently Asked Questions ==
 
-= What images will be used as a thumbnail? =
+= What image will be used as post thumbnail? =
 
-Images that are shown in your blog post and saved as its attachments in Wordpress, i.e. uploaded directly to your blog. No support of external images.
+You can specify image number that will be used as post thumbnail. By default it takes the first image in the post body. If this image was uploaded on server plugin assigns it as a post thumbnail. If the image is externally hosted, plugin will upload it on server, attach to post and assign as thumbnail.
 
-= What is the Image Number parameter? =
-
-Usually the first image of your blog post is considered as the main image that is used as thumbnail. But rarely the second blog post image may be the main. 
-
-If there is no image for specified image number in the post, then no thumbnail will be stored for this post. If *Overwrite* parameter is checked, then if the post already has thumbnail that thumbnail will be removed. 
+If there is no image for specified image number in the post, then no thumbnail will be stored for this post. If *Overwrite* parameter is checked, then if the post already has thumbnail old thumbnail will be removed. 
 
 == Screenshots ==
 
@@ -50,10 +43,23 @@ If there is no image for specified image number in the post, then no thumbnail w
 
 == Changelog ==
 
+= 0.6 =
+* Uploading of externally hosted images tries several methods for different configurations
+* Relative paths support fixed
+
+= 0.5 =
+* Added support of externally hosted images
+
 = 0.4.1 =
 * Released plugin initial version
 
 == Upgrade Notice ==
+
+= 0.6 =
+This version uses different methods to upload externally hosted images for different configurations and supports relative paths to images
+
+= 0.5 =
+This version supports externally hosted images
 
 = 0.4.1 =
 The first released version
